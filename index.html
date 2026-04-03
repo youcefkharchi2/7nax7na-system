@@ -130,8 +130,11 @@
     </script>
 
     <header id="home" class="hero">
-        <video class="hero-video" autoplay muted loop playsinline>
+        <!-- فيديو خلفية -->
+        <video class="hero-video" autoplay muted loop playsinline poster="https://d.top4top.io/p_37256nv091.jpg">
             <source src="video.mp4" type="video/mp4">
+            <!-- fallback: صورة خلفية إذا مافيش فيديو -->
+            <img src="https://d.top4top.io/p_37256nv091.jpg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;">
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
