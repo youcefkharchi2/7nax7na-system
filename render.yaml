@@ -1,10 +1,13 @@
 services:
   - type: web
     name: 7nax7na-website
-    env: static
-    buildCommand: null
+    runtime: static
+    buildCommand: ""
     staticPublishPath: .
     routes:
+      - type: rewrite
+        source: /(.*)
+        destination: /$1
       - type: rewrite
         source: /
         destination: /index.html
