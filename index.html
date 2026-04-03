@@ -48,6 +48,13 @@
 </head>
 <body>
 
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('discord_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
     <nav class="navbar">
         <div class="logo">7NAX<span>7NA</span></div>
         <ul class="nav-links">
@@ -55,8 +62,24 @@
             <li><a href="store.html">المتجر</a></li>
             <li><a href="whitelist.html">وايت ليست</a></li>
             <li><a href="https://discord.gg/D4dxHpHT5P" target="_blank" class="btn-discord">الديسكورد</a></li>
+            <li><span id="user-info" style="color: #27F5A3; font-size: 14px;"></span></li>
+            <li><a href="#" onclick="logout()" style="color: #ff6b6b; font-size: 14px;">تسجيل الخروج</a></li>
         </ul>
     </nav>
+
+    <script>
+        // Show user info
+        const user = JSON.parse(localStorage.getItem('discord_user'));
+        if (user) {
+            document.getElementById('user-info').textContent = user.username;
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('discord_user');
+            window.location.href = 'login.html';
+        }
+    </script>
 
     <header id="home" class="hero">
         <div class="hero-content">
