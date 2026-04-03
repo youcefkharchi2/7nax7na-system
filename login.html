@@ -9,12 +9,18 @@
     <style>
         html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Cairo', sans-serif; background-color: #0f0f0f; color: #fff; line-height: 1.6; }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://d.top4top.io/p_37256nv091.jpg') center/cover no-repeat fixed;
+            color: #fff; 
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
         /* Navbar */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 10%; background: rgba(15, 15, 15, 0.98);
+            padding: 15px 10%; background: rgba(15, 15, 15, 0.95);
             position: fixed; width: 100%; top: 0; z-index: 1000;
             border-bottom: 2px solid #27F5A3;
         }
@@ -30,13 +36,15 @@
             padding: 100px 10% 50px;
         }
         .login-box {
-            background: #1e1e1e;
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(10px);
             padding: 50px;
             border-radius: 20px;
-            border: 1px solid #333;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
             max-width: 450px;
             width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         .login-box .logo-text {
             font-size: 32px;
