@@ -1,9 +1,8 @@
 services:
-  - type: web
+  - type: static
     name: 7nax7na-website
-    runtime: static
     buildCommand: ""
-    staticPublishPath: .
+    publish: .
     routes:
       - type: rewrite
         source: /(.*)
