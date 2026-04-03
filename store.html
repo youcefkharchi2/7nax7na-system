@@ -9,6 +9,13 @@
 </head>
 <body>
 
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('discord_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
     <section class="section" style="padding-top: 50px;">
         <h2 class="section-title">مقتنيات السيرفر</h2>
         <div class="grid-container">
@@ -32,6 +39,13 @@
             </div>
         </div>
     </section>
+
+    <script>
+        // Check auth on store page too
+        if (!localStorage.getItem('discord_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
 
     <footer>
         <p>جميع الحقوق محفوظة &copy; 2026 | سيرفر 7NAX7NA</p>
