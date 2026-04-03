@@ -10,20 +10,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Cairo', sans-serif; background-color: #0f0f0f; color: #fff; line-height: 1.6; }
 
-        /* Navbar */
-        .navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 10%; background: rgba(15, 15, 15, 0.98);
-            position: fixed; width: 100%; top: 0; z-index: 1000;
-            border-bottom: 2px solid #27F5A3;
-        }
-        .logo { font-size: 26px; font-weight: bold; }
-        .logo span { color: #27F5A3; }
-        .nav-links { list-style: none; display: flex; gap: 25px; align-items: center; }
-        .nav-links a { text-decoration: none; color: #fff; font-weight: bold; transition: 0.3s; }
-        .nav-links a:hover { color: #27F5A3; }
-        .btn-discord { background: #5865F2; padding: 8px 20px; border-radius: 6px; color: #fff !important; }
-
         /* Whitelist Section */
         .section { padding: 150px 10% 80px; background-color: #161616; min-height: 100vh; }
         .section-title { text-align: center; margin-bottom: 60px; font-size: 2.8rem; color: #27F5A3; }
@@ -41,17 +27,7 @@
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">7NAX<span>7NA</span></div>
-        <ul class="nav-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="store.html">المتجر</a></li>
-            <li><a href="whitelist.html">وايت ليست</a></li>
-            <li><a href="https://discord.gg/D4dxHpHT5P" target="_blank" class="btn-discord">الديسكورد</a></li>
-        </ul>
-    </nav>
-
-    <section class="section">
+    <section class="section" style="padding-top: 50px;">
         <h2 class="section-title">تقديم وايت ليست</h2>
         <div class="form-container">
             <form onsubmit="event.preventDefault(); alert('سيتم تحويلك للديسكورد للتقديم'); window.open('https://discord.gg/D4dxHpHT5P');">
