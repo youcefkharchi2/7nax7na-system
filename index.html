@@ -43,6 +43,28 @@
         .alt-bg { background-color: #161616; }
         .section-title { text-align: center; margin-bottom: 60px; font-size: 2.8rem; color: #27F5A3; }
 
+        /* Video Section */
+        .video-section { 
+            padding: 80px 10%; 
+            background: #0f0f0f;
+            text-align: center;
+        }
+        .video-container {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 2px solid #333;
+        }
+        .video-container video,
+        .video-container iframe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: none;
+            display: block;
+        }
+
         footer { text-align: center; padding: 50px; background: #0a0a0a; color: #666; border-top: 1px solid #333; }
     </style>
 </head>
@@ -87,6 +109,20 @@
             <p>المتجر ونظام تقديم الوايت ليست الرسمي</p>
         </div>
     </header>
+
+    <section class="video-section">
+        <h2 class="section-title">شاهد السيرفر</h2>
+        <div class="video-container">
+            <!-- لفيديو من ملف video.mp4 (إذا عندك الملف) -->
+            <video controls poster="https://d.top4top.io/p_37256nv091.jpg">
+                <source src="video.mp4" type="video/mp4">
+                المتصفح لا يدعم تشغيل الفيديو
+            </video>
+            
+            <!-- أو لفيديو يوتيوب (شيل التعليق) -->
+            <!-- <iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe> -->
+        </div>
+    </section>
 
     <footer>
         <p>جميع الحقوق محفوظة &copy; 2026 | سيرفر 7NAX7NA</p>
