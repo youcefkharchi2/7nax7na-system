@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتجر | 7NAX7NA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">7NAX<span>7NA</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="store.html">المتجر</a></li>
+            <li><a href="index.html#whitelist">وايت ليست</a></li>
+            <li><a href="https://discord.gg/D4dxHpHT5P" target="_blank" class="btn-discord">الديسكورد</a></li>
+        </ul>
+    </nav>
+
+    <section class="section" style="padding-top: 150px;">
+        <h2 class="section-title">مقتنيات السيرفر</h2>
+        <div class="grid-container">
+            <div class="card">
+                <img src="https://b.top4top.io/p_372585a8a1.png" alt="BMW M3" onclick="viewImage(this.src)">
+                <div class="card-body">
+                    <h3>BMW M3</h3>
+                    <p>أداء جبار وشكل انسيابي</p>
+                    <span class="price">$20.00</span>
+                    <button class="buy-btn" onclick="openPayment()">شراء الآن</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://g.top4top.io/p_3725vjpx01.jpg" alt="Kawasaki" onclick="viewImage(this.src)">
+                <div class="card-body">
+                    <h3>2020 Kawasaki Z</h3>
+                    <p>دباب كواساكي مميز للمغامرات</p>
+                    <span class="price">$15.00</span>
+                    <button class="buy-btn" onclick="openPayment()">شراء الآن</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="imageViewer" class="image-viewer" onclick="this.style.display='none'">
+        <img id="fullImage">
+    </div>
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePayment()">&times;</span>
+            <h3 style="margin-bottom:25px; color:#27F5A3;">اختر وسيلة الدفع</h3>
+            
+            <a href="https://paypal.me/YOUR_USERNAME" target="_blank" class="pay-option">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/174/174861.png" alt="PayPal">
+                    <span>PayPal</span>
+                </div>
+                <span class="pay-tag tag-online">Online</span>
+            </a>
+
+            <a href="https://discord.gg/D4dxHpHT5P" target="_blank" class="pay-option">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <img src="https://k.top4top.io/p_37257eqbz1.png" alt="RedotPay">
+                    <span>RedotPay</span>
+                </div>
+                <span class="pay-tag tag-discord">Discord</span>
+            </a>
+
+            <a href="https://discord.gg/D4dxHpHT5P" target="_blank" class="pay-option">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <img src="https://l.top4top.io/p_372559lar1.png" alt="Bridi Mob">
+                    <span>Bridi Mob</span>
+                </div>
+                <span class="pay-tag tag-discord">Discord</span>
+            </a>
+
+            <a href="https://discord.gg/D4dxHpHT5P" target="_blank" class="pay-option">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <img src="https://g.top4top.io/p_37252eg0y1.png" alt="CCP">
+                    <span>CCP</span>
+                </div>
+                <span class="pay-tag tag-discord">Discord</span>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2026 | سيرفر 7NAX7NA</p>
+    </footer>
+
+    <script>
+        function viewImage(src) {
+            document.getElementById("fullImage").src = src;
+            document.getElementById("imageViewer").style.display = "flex";
+        }
+
+        function openPayment() { 
+            document.getElementById("paymentModal").style.display = "flex"; 
+        }
+        
+        function closePayment() { 
+            document.getElementById("paymentModal").style.display = "none"; 
+        }
+        
+        window.onclick = function(event) { 
+            if (event.target == document.getElementById("paymentModal")) {
+                closePayment(); 
+            }
+        }
+    </script>
+
+</body>
+</html>
