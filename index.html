@@ -24,11 +24,37 @@
         .nav-links a:hover { color: #27F5A3; }
         .btn-discord { background: #5865F2; padding: 8px 20px; border-radius: 6px; color: #fff !important; }
 
-        /* Hero */
+        /* Hero with Video Background */
         .hero {
             height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url('https://d.top4top.io/p_37256nv091.jpg') center/cover;
-            display: flex; align-items: center; justify-content: center; text-align: center;
+            position: relative;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center;
+            overflow: hidden;
+        }
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
         }
         .hero h1 { font-size: 4rem; margin-bottom: 10px; }
         .main-btn {
@@ -104,6 +130,10 @@
     </script>
 
     <header id="home" class="hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="video.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1>أهلاً بك في 7NAX7NA</h1>
             <p>المتجر ونظام تقديم الوايت ليست الرسمي</p>
