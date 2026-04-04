@@ -13,16 +13,34 @@
         /* Navbar */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 10%; background: rgba(15, 15, 15, 0.98);
+            padding: 15px 10%; 
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(10px);
             position: fixed; width: 100%; top: 0; z-index: 1000;
-            border-bottom: 2px solid #27F5A3;
+            border-bottom: 1px solid rgba(39, 245, 163, 0.3);
         }
         .logo { font-size: 26px; font-weight: bold; }
         .logo span { color: #27F5A3; }
-        .nav-links { list-style: none; display: flex; gap: 25px; align-items: center; }
-        .nav-links a { text-decoration: none; color: #fff; font-weight: bold; transition: 0.3s; }
-        .nav-links a:hover { color: #27F5A3; }
-        .btn-discord { background: #5865F2; padding: 8px 20px; border-radius: 6px; color: #fff !important; }
+        .nav-links { list-style: none; display: flex; gap: 15px; align-items: center; }
+        .nav-links a { 
+            text-decoration: none; color: #fff; font-weight: bold; transition: 0.3s;
+            padding: 8px 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-links a:hover { 
+            background: rgba(39, 245, 163, 0.2);
+            border-color: rgba(39, 245, 163, 0.5);
+            color: #27F5A3;
+        }
+        .btn-discord { 
+            background: rgba(88, 101, 242, 0.2) !important;
+            border: 1px solid rgba(88, 101, 242, 0.5) !important;
+        }
+        .btn-discord:hover {
+            background: rgba(88, 101, 242, 0.4) !important;
+        }
 
         /* Hero with Video Background */
         .hero {
