@@ -20,6 +20,11 @@
             position: fixed; width: 100%; top: 0; z-index: 1000;
             border-bottom: 1px solid rgba(39, 245, 163, 0.3);
         }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
         .logo { font-size: 26px; font-weight: bold; }
         .logo span { color: #27F5A3; }
         .nav-links { list-style: none; display: flex; gap: 15px; align-items: center; }
@@ -55,6 +60,10 @@
             font-size: 14px;
             font-weight: bold;
         }
+        .logout-btn {
+            color: #ff6b6b !important;
+            font-size: 14px;
+        }
 
         /* Store Section */
         .section { padding: 120px 10% 80px; }
@@ -69,18 +78,18 @@
     </script>
 
     <nav class="navbar">
-        <div class="logo">7NAX<span>7NA</span></div>
+        <div class="nav-left">
+            <div class="logo">7NAX<span>7NA</span></div>
+            <div class="user-profile">
+                <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+                <span id="user-info" class="user-name"></span>
+            </div>
+            <a href="#" onclick="logout()" class="logout-btn">تسجيل الخروج</a>
+        </div>
         <ul class="nav-links">
             <li><a href="index.html">الرئيسية</a></li>
             <li><a href="store.html">المتجر</a></li>
             <li><a href="whitelist.html">وايت ليست</a></li>
-            <li>
-                <div class="user-profile">
-                    <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
-                    <span id="user-info" class="user-name"></span>
-                </div>
-            </li>
-            <li><a href="#" onclick="logout()" style="color: #ff6b6b; font-size: 14px;">تسجيل الخروج</a></li>
         </ul>
     </nav>
 
