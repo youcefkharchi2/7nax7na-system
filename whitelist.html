@@ -10,6 +10,60 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Cairo', sans-serif; background-color: #0f0f0f; color: #fff; line-height: 1.6; }
 
+        /* Navbar */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 10%; 
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(10px);
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(39, 245, 163, 0.3);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .logo { font-size: 26px; font-weight: bold; }
+        .logo span { color: #27F5A3; }
+        .nav-links { list-style: none; display: flex; gap: 15px; align-items: center; }
+        .nav-links a { 
+            text-decoration: none; color: #fff; font-weight: bold; transition: 0.3s;
+            padding: 8px 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-links a:hover { 
+            background: rgba(39, 245, 163, 0.2);
+            border-color: rgba(39, 245, 163, 0.5);
+            color: #27F5A3;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #27F5A3;
+        }
+        .user-name {
+            color: #27F5A3;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .logout-btn {
+            color: #ff6b6b !important;
+            font-size: 14px;
+        }
+
         /* Whitelist Section */
         .section { padding: 150px 10% 80px; background-color: #161616; min-height: 100vh; }
         .section-title { text-align: center; margin-bottom: 60px; font-size: 2.8rem; color: #27F5A3; }
@@ -28,13 +82,43 @@
 <body>
 
     <script>
-        // Check if user is logged in
         if (!localStorage.getItem('discord_user')) {
             window.location.href = 'login.html';
         }
     </script>
 
-    <section class="section" style="padding-top: 50px;">
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo">7NAX<span>7NA</span></div>
+            <div class="user-profile">
+                <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+                <span id="user-info" class="user-name"></span>
+            </div>
+            <a href="#" onclick="logout()" class="logout-btn">تسجيل الخروج</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="store.html">المتجر</a></li>
+            <li><a href="whitelist.html">وايت ليست</a></li>
+        </ul>
+    </nav>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('discord_user'));
+        if (user) {
+            document.getElementById('user-info').textContent = user.username;
+            const avatarUrl = user.avatar 
+                ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                : 'https://cdn.discordapp.com/embed/avatars/0.png';
+            document.getElementById('user-avatar').src = avatarUrl;
+        }
+        function logout() {
+            localStorage.removeItem('discord_user');
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <section class="section">
         <h2 class="section-title">تقديم وايت ليست</h2>
         <div class="form-container">
             <form onsubmit="event.preventDefault(); alert('سيتم تحويلك للديسكورد للتقديم'); window.open('https://discord.gg/D4dxHpHT5P');">
