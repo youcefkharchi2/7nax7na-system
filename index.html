@@ -42,6 +42,28 @@
             background: rgba(88, 101, 242, 0.4) !important;
         }
 
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #27F5A3;
+        }
+        .user-name {
+            color: #27F5A3;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
         /* Hero with Video Background */
         .hero {
             height: 100vh;
@@ -127,8 +149,12 @@
             <li><a href="index.html">الرئيسية</a></li>
             <li><a href="store.html">المتجر</a></li>
             <li><a href="whitelist.html">وايت ليست</a></li>
-            <li><a href="https://discord.gg/D4dxHpHT5P" target="_blank" class="btn-discord">الديسكورد</a></li>
-            <li><span id="user-info" style="color: #27F5A3; font-size: 14px;"></span></li>
+            <li>
+                <div class="user-profile">
+                    <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+                    <span id="user-info" class="user-name"></span>
+                </div>
+            </li>
             <li><a href="#" onclick="logout()" style="color: #ff6b6b; font-size: 14px;">تسجيل الخروج</a></li>
         </ul>
     </nav>
@@ -138,6 +164,11 @@
         const user = JSON.parse(localStorage.getItem('discord_user'));
         if (user) {
             document.getElementById('user-info').textContent = user.username;
+            // Set avatar
+            const avatarUrl = user.avatar 
+                ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                : 'https://cdn.discordapp.com/embed/avatars/0.png';
+            document.getElementById('user-avatar').src = avatarUrl;
         }
         
         // Logout function
