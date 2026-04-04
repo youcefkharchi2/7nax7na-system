@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المتجر | 7NAX7NA</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
         html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -66,6 +67,72 @@
 
         /* Store Section */
         .section { padding: 120px 10% 80px; }
+        .section-title { text-align: center; margin-bottom: 60px; font-size: 2.8rem; color: #27F5A3; }
+        
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 30px; 
+            max-width: 1200px; 
+            margin: 0 auto;
+        }
+        .card { 
+            background: #1e1e1e; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            border: 1px solid #333;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 40px rgba(39, 245, 163, 0.1);
+            border-color: #27F5A3;
+        }
+        .card img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; }
+        .card-body { padding: 25px; }
+        .card-body h3 { font-size: 1.5rem; margin-bottom: 10px; color: #27F5A3; }
+        .card-body p { color: #aaa; margin-bottom: 15px; }
+        .price { 
+            display: block; 
+            font-size: 1.8rem; 
+            color: #27F5A3; 
+            font-weight: bold; 
+            margin-bottom: 15px;
+        }
+        .buy-btn { 
+            width: 100%; 
+            padding: 12px; 
+            background: #c77100; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.3s;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+        }
+        .buy-btn:hover { background: #27F5A3; color: #000; }
+
+        /* Image Viewer */
+        .image-viewer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-viewer img { max-width: 90%; max-height: 90%; border-radius: 10px; }
+        .close-viewer {
+            position: absolute;
+            top: 20px; right: 40px;
+            font-size: 40px;
+            color: #fff;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -131,10 +198,16 @@
         </div>
     </section>
 
+    <!-- Image Viewer -->
+    <div id="imageViewer" class="image-viewer" onclick="this.style.display='none'">
+        <span class="close-viewer">&times;</span>
+        <img id="fullImage" src="" alt="Full View">
+    </div>
+
     <script>
-        function logout() {
-            localStorage.removeItem('discord_user');
-            window.location.href = 'login.html';
+        function viewImage(src) {
+            document.getElementById("fullImage").src = src;
+            document.getElementById("imageViewer").style.display = "flex";
         }
     </script>
 
