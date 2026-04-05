@@ -279,6 +279,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve static files (HTML, CSS, JS)
+app.use(express.static('.'));
+
 // API Routes
 app.get('/api/stats', (req, res) => {
     db.get('SELECT COUNT(*) as pending_whitelist FROM whitelist_applications WHERE status = "pending"', (err, whitelistRow) => {
