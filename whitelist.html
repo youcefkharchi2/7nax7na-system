@@ -143,8 +143,8 @@
     </section>
 
     <script>
-        const user = JSON.parse(localStorage.getItem('discord_user')) || {};
-        const userId = user.id;
+        const userData = JSON.parse(localStorage.getItem('discord_user')) || {};
+        const userId = userData.id;
         
         // Check whitelist status on page load
         async function checkWhitelistStatus() {
@@ -163,59 +163,43 @@
                 const pageTitle = document.getElementById('pageTitle');
                 
                 if (data.status === 'approved') {
-                    // Hide form, show approved message
                     formContainer.style.display = 'none';
                     statusContainer.style.display = 'block';
                     pageTitle.textContent = 'حالة الوايت ليست';
-                    
                     document.getElementById('statusIcon').textContent = '✅';
                     document.getElementById('statusTitle').textContent = 'تم قبولك في الوايت ليست!';
                     document.getElementById('statusTitle').style.color = '#27F5A3';
                     document.getElementById('statusMessage').textContent = 'تهانينا! تم قبول طلبك في الوايت ليست. يمكنك الآن الانضمام للسيرفر.';
-                    
                 } else if (data.status === 'blocked') {
-                    // Hide form, show blocked message with reason
                     formContainer.style.display = 'none';
                     statusContainer.style.display = 'block';
                     pageTitle.textContent = 'حالة الوايت ليست';
-                    
                     document.getElementById('statusIcon').textContent = '🚫';
                     document.getElementById('statusTitle').textContent = 'تم حظرك من الوايت ليست';
                     document.getElementById('statusTitle').style.color = '#ff6b6b';
                     document.getElementById('statusMessage').textContent = 'عذراً، تم رفض طلبك وتم حظرك من التقديم مرة أخرى.';
-                    
                     if (data.reason) {
-                        const reasonEl = document.getElementById('statusReason');
-                        reasonEl.textContent = `السبب: ${data.reason}`;
-                        reasonEl.style.display = 'block';
+                        document.getElementById('statusReason').textContent = `السبب: ${data.reason}`;
+                        document.getElementById('statusReason').style.display = 'block';
                     }
-                    
                 } else if (data.status === 'pending') {
-                    // Show form but with pending message
                     document.getElementById('message').textContent = '⏳ طلبك قيد المراجعة...';
                     document.getElementById('message').style.color = '#f5a623';
                     document.getElementById('submitBtn').disabled = true;
                     document.getElementById('submitBtn').textContent = 'طلبك قيد المراجعة';
-                    
                 } else if (data.status === 'rejected') {
-                    // Show form - can reapply
                     document.getElementById('message').textContent = '❌ تم رفض طلبك السابق. يمكنك التقديم مرة أخرى.';
                     document.getElementById('message').style.color = '#ff6b6b';
                 }
-                // If 'none', show normal form
-                
             } catch (error) {
                 console.error('Error checking status:', error);
             }
         }
         
-        // Check status on load
         checkWhitelistStatus();
         
-        // Form submission
         document.getElementById('whitelistForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             const submitBtn = document.getElementById('submitBtn');
             const messageDiv = document.getElementById('message');
             const discordName = document.getElementById('discordName').value;
@@ -233,16 +217,12 @@
             try {
                 const response = await fetch('/api/whitelist/submit', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         discord_name: discordName,
                         rp_concept: rpConcept,
                         user_id: userId,
-                        user_avatar: user.avatar 
-                            ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
-                            : null
+                        user_avatar: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : null
                     })
                 });
                 
