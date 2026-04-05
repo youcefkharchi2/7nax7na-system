@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
@@ -15,6 +15,7 @@ db.serialize(() => {
         username TEXT,
         rp_concept TEXT,
         status TEXT DEFAULT 'pending',
+        reason TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
     
@@ -332,18 +333,20 @@ app.post('/api/whitelist/:id/reject', (req, res) => {
 });
 
 // Submit whitelist application from website
-app.post('/api/whitelist/submit', (req, res) => {
+app.post('/api/whitelist/submit', async (req, res) => {
     const { discord_name, rp_concept, user_id, user_avatar } = req.body;
     
     // Save to database
     db.run(
-        'INSERT INTO whitelist_applications (user_id, username, rp_concept) VALUES (?, ?, ?)',
-        [user_id || 'website', discord_name, rp_concept],
-        function(err) {
+        'INSERT INTO whitelist_applications (user_id, username, rp_concept, status) VALUES (?, ?, ?, ?)',
+        [user_id || 'website', discord_name, rp_concept, 'pending'],
+        async function(err) {
             if (err) {
                 console.error(err);
                 return res.status(500).json({ error: 'Database error' });
             }
+            
+            const appId = this.lastID;
             
             // Create embed for Discord
             const embed = new EmbedBuilder()
@@ -352,27 +355,76 @@ app.post('/api/whitelist/submit', (req, res) => {
                 .setDescription(`**اسم الديسكورد:** ${discord_name}\n\n**مفهوم الرول بلاي:**\n${rp_concept}`)
                 .setThumbnail(user_avatar || 'https://cdn.discordapp.com/embed/avatars/0.png')
                 .setTimestamp()
-                .setFooter({ text: `ID: ${this.lastID}` });
+                .setFooter({ text: `ID: ${appId} | User: ${user_id || 'website'}` });
+            
+            // Create buttons row
+            const row = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`approve_${appId}_${user_id || 'website'}`)
+                        .setLabel('✅ قبول')
+                        .setStyle(ButtonStyle.Success),
+                    new ButtonBuilder()
+                        .setCustomId(`reject_${appId}_${user_id || 'website'}`)
+                        .setLabel('❌ رفض')
+                        .setStyle(ButtonStyle.Danger),
+                    new ButtonBuilder()
+                        .setCustomId(`block_${appId}_${user_id || 'website'}`)
+                        .setLabel('🚫 حظر')
+                        .setStyle(ButtonStyle.Secondary)
+                );
             
             // Send to admin channel
             const adminChannel = client.channels.cache.get(process.env.ADMIN_CHANNEL_ID);
             if (adminChannel) {
-                adminChannel.send({ 
-                    embeds: [embed],
-                    content: '📩 تقديم جديد على الوايت ليست!'
-                });
+                try {
+                    await adminChannel.send({ 
+                        embeds: [embed],
+                        content: '📩 تقديم جديد على الوايت ليست!',
+                        components: [row]
+                    });
+                    console.log('Message with buttons sent to Discord');
+                } catch (sendErr) {
+                    console.error('Failed to send to Discord:', sendErr);
+                    // Still return success to user even if Discord fails
+                }
+            } else {
+                console.error('Admin channel not found');
             }
             
             res.json({ 
                 success: true, 
                 message: 'تم إرسال طلبك بنجاح!',
-                id: this.lastID 
+                id: appId 
             });
         }
     );
 });
 
-const PORT = process.env.PORT || 3000;
+app.post('/api/whitelist/:id/block', (req, res) => {
+    const { reason } = req.body;
+    db.run('UPDATE whitelist_applications SET status = "blocked", reason = ? WHERE id = ?', [reason || 'No reason', req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Blocked', reason });
+    });
+});
+
+// Check user's whitelist status
+app.get('/api/whitelist/status/:user_id', (req, res) => {
+    db.all(
+        'SELECT * FROM whitelist_applications WHERE user_id = ? ORDER BY created_at DESC LIMIT 1',
+        [req.params.user_id],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (rows.length === 0) return res.json({ status: 'none', message: 'No application found' });
+            res.json({
+                status: rows[0].status,
+                reason: rows[0].reason,
+                created_at: rows[0].created_at
+            });
+        }
+    );
+});
 app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}`);
 });
@@ -418,6 +470,103 @@ client.on('debug', info => {
 
 client.on('error', error => {
     console.error('Client Error:', error);
+});
+
+// Handle button interactions
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isButton()) return;
+    
+    const customId = interaction.customId;
+    const [action, appId, userId] = customId.split('_');
+    
+    if (!['approve', 'reject', 'block'].includes(action)) return;
+    
+    // Check if user is admin
+    if (!process.env.ADMIN_IDS.includes(interaction.user.id)) {
+        return interaction.reply({ content: '❌ ليس لديك صلاحية!', ephemeral: true });
+    }
+    
+    if (action === 'block') {
+        // Show modal for block reason
+        const modal = new ModalBuilder()
+            .setCustomId(`block_modal_${appId}_${userId}`)
+            .setTitle('🚫 سبب الحظر');
+        
+        const reasonInput = new TextInputBuilder()
+            .setCustomId('block_reason')
+            .setLabel('سبب الحظر')
+            .setPlaceholder('اكتب سبب الحظر هنا...')
+            .setStyle(TextInputStyle.Paragraph)
+            .setRequired(true);
+        
+        const actionRow = new ActionRowBuilder().addComponents(reasonInput);
+        modal.addComponents(actionRow);
+        
+        return interaction.showModal(modal);
+    }
+    
+    // Update database
+    const newStatus = action === 'approve' ? 'approved' : 'rejected';
+    db.run('UPDATE whitelist_applications SET status = ? WHERE id = ?', [newStatus, appId], function(err) {
+        if (err) {
+            console.error(err);
+            return interaction.reply({ content: '❌ حدث خطأ!', ephemeral: true });
+        }
+        
+        const actionText = action === 'approve' ? '✅ تم القبول' : '❌ تم الرفض';
+        const color = action === 'approve' ? '#27F5A3' : '#ff6b6b';
+        
+        // Update the original message
+        const embed = new EmbedBuilder()
+            .setColor(color)
+            .setTitle(`${actionText} - طلب وايت ليست`)
+            .setDescription(`**المعالج:** ${interaction.user.username}\n**الحالة:** ${actionText}`)
+            .setTimestamp();
+        
+        interaction.update({ 
+            embeds: [embed],
+            components: [] // Remove buttons
+        });
+        
+        interaction.followUp({ 
+            content: `${actionText} بنجاح!`, 
+            ephemeral: true 
+        });
+    });
+});
+
+// Handle modal submission for block
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isModalSubmit()) return;
+    
+    if (interaction.customId.startsWith('block_modal_')) {
+        const [, , appId, userId] = interaction.customId.split('_');
+        const reason = interaction.fields.getTextInputValue('block_reason');
+        
+        // Update database with block status and reason
+        db.run('UPDATE whitelist_applications SET status = "blocked", reason = ? WHERE id = ?', [reason, appId], function(err) {
+            if (err) {
+                console.error(err);
+                return interaction.reply({ content: '❌ حدث خطأ!', ephemeral: true });
+            }
+            
+            const embed = new EmbedBuilder()
+                .setColor('#000000')
+                .setTitle('🚫 تم الحظر - طلب وايت ليست')
+                .setDescription(`**المعالج:** ${interaction.user.username}\n**السبب:** ${reason}`)
+                .setTimestamp();
+            
+            interaction.update({ 
+                embeds: [embed],
+                components: [] // Remove buttons
+            });
+            
+            interaction.followUp({ 
+                content: `🚫 تم الحظر بنجاح!\n**السبب:** ${reason}`, 
+                ephemeral: true 
+            });
+        });
+    }
 });
 
 // Handle errors
