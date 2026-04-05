@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سيرفر 7NAX7NA | المتجر الرسمي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background-color: #0f0f0f; color: #fff; line-height: 1.6; }
+
+        /* Navbar */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 10%; 
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(10px);
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(39, 245, 163, 0.3);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .logo { font-size: 26px; font-weight: bold; }
+        .logo span { color: #27F5A3; }
+        .nav-links { list-style: none; display: flex; gap: 15px; align-items: center; }
+        .nav-links a { 
+            text-decoration: none; color: #fff; font-weight: bold; transition: 0.3s;
+            padding: 8px 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-links a:hover { 
+            background: rgba(39, 245, 163, 0.2);
+            border-color: rgba(39, 245, 163, 0.5);
+            color: #27F5A3;
+        }
+        .btn-discord { 
+            background: rgba(88, 101, 242, 0.2) !important;
+            border: 1px solid rgba(88, 101, 242, 0.5) !important;
+        }
+        .btn-discord:hover {
+            background: rgba(88, 101, 242, 0.4) !important;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #27F5A3;
+        }
+        .user-name {
+            color: #27F5A3;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .logout-btn {
+            color: #ff6b6b !important;
+            font-size: 14px;
+        }
+
+        /* Hero with Video Background */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center;
+            overflow: hidden;
+        }
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        .hero h1 { font-size: 4rem; margin-bottom: 10px; }
+        .main-btn {
+            display: inline-block; margin-top: 30px; padding: 14px 45px;
+            background: #c77100; color: #fff; text-decoration: none;
+            border-radius: 50px; font-weight: bold; transition: 0.4s;
+        }
+        .main-btn:hover { background: #27F5A3; color: #000; transform: translateY(-5px); }
+
+        /* Sections */
+        .section { padding: 120px 10% 80px; }
+        .alt-bg { background-color: #161616; }
+        .section-title { text-align: center; margin-bottom: 60px; font-size: 2.8rem; color: #27F5A3; }
+
+        /* Video Section */
+        .video-section { 
+            padding: 80px 10%; 
+            background: #0f0f0f;
+            text-align: center;
+        }
+        .video-container {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 2px solid #333;
+        }
+        .video-container video,
+        .video-container iframe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: none;
+            display: block;
+        }
+
+        footer { text-align: center; padding: 50px; background: #0a0a0a; color: #666; border-top: 1px solid #333; }
+    </style>
+</head>
+<body>
+
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('discord_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo">7NAX<span>7NA</span></div>
+            <div class="user-profile">
+                <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+                <span id="user-info" class="user-name"></span>
+            </div>
+            <a href="#" onclick="logout()" class="logout-btn">تسجيل الخروج</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/interface">الرئيسية</a></li>
+            <li><a href="/store">المتجر</a></li>
+            <li><a href="/whitelist">وايت ليست</a></li>
+        </ul>
+    </nav>
+
+    <script>
+        // Show user info
+        const user = JSON.parse(localStorage.getItem('discord_user'));
+        if (user) {
+            document.getElementById('user-info').textContent = user.username;
+            // Set avatar
+            const avatarUrl = user.avatar 
+                ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                : 'https://cdn.discordapp.com/embed/avatars/0.png';
+            document.getElementById('user-avatar').src = avatarUrl;
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('discord_user');
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <header id="home" class="hero">
+        <!-- فيديو خلفية -->
+        <video class="hero-video" autoplay muted loop playsinline poster="https://d.top4top.io/p_37256nv091.jpg">
+            <source src="video.mp4" type="video/mp4">
+            <!-- fallback: صورة خلفية إذا مافيش فيديو -->
+            <img src="https://d.top4top.io/p_37256nv091.jpg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>أهلاً بك في 7NAX7NA</h1>
+            <p>المتجر ونظام تقديم الوايت ليست الرسمي</p>
+        </div>
+    </header>
+
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2026 | سيرفر 7NAX7NA</p>
+    </footer>
+
+</body>
+</html>

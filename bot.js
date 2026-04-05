@@ -279,7 +279,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files (HTML, CSS, JS)
+// Clean URLs without .html extension (must be BEFORE static)
+app.get('/interface', (req, res) => res.sendFile('index.html', { root: '.' }));
+app.get('/store', (req, res) => res.sendFile('store.html', { root: '.' }));
+app.get('/whitelist', (req, res) => res.sendFile('whitelist.html', { root: '.' }));
+app.get('/login', (req, res) => res.sendFile('login.html', { root: '.' }));
+app.get('/auth', (req, res) => res.sendFile('auth.html', { root: '.' }));
+
+// Serve static files (HTML, CSS, JS) - AFTER routes
 app.use(express.static('.'));
 
 // API Routes
