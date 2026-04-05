@@ -121,19 +121,70 @@
     <section class="section">
         <h2 class="section-title">تقديم وايت ليست</h2>
         <div class="form-container">
-            <form onsubmit="event.preventDefault(); alert('سيتم تحويلك للديسكورد للتقديم'); window.open('https://discord.gg/D4dxHpHT5P');">
+            <form id="whitelistForm">
                 <div class="form-group">
                     <label>اسم الديسكورد:</label>
-                    <input type="text" placeholder="Example#0000" required>
+                    <input type="text" id="discordName" placeholder="Example#0000" required>
                 </div>
                 <div class="form-group">
                     <label>ما هو مفهومك للرول بلاي؟</label>
-                    <textarea placeholder="اشرح بأسلوبك..." required></textarea>
+                    <textarea id="rpConcept" placeholder="اشرح بأسلوبك..." required></textarea>
                 </div>
-                <button type="submit" class="submit-btn">إرسال عبر الديسكورد</button>
+                <button type="submit" class="submit-btn" id="submitBtn">إرسال الطلب</button>
+                <div id="message" style="margin-top: 15px; text-align: center; color: #27F5A3; font-weight: bold;"></div>
             </form>
         </div>
     </section>
+
+    <script>
+        document.getElementById('whitelistForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+            const discordName = document.getElementById('discordName').value;
+            const rpConcept = document.getElementById('rpConcept').value;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإرسال...';
+            
+            try {
+                const user = JSON.parse(localStorage.getItem('discord_user')) || {};
+                
+                const response = await fetch('/api/whitelist/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        discord_name: discordName,
+                        rp_concept: rpConcept,
+                        user_id: user.id || null,
+                        user_avatar: user.avatar 
+                            ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                            : null
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    messageDiv.textContent = '✅ ' + data.message;
+                    messageDiv.style.color = '#27F5A3';
+                    document.getElementById('whitelistForm').reset();
+                } else {
+                    messageDiv.textContent = '❌ ' + (data.error || 'حدث خطأ!');
+                    messageDiv.style.color = '#ff6b6b';
+                }
+            } catch (error) {
+                messageDiv.textContent = '❌ حدث خطأ في الاتصال بالسيرفر!';
+                messageDiv.style.color = '#ff6b6b';
+            }
+            
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'إرسال الطلب';
+        });
+    </script>
 
     <footer>
         <p>جميع الحقوق محفوظة &copy; 2026 | سيرفر 7NAX7NA</p>
