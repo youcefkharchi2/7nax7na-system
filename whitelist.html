@@ -137,9 +137,6 @@
     </section>
 
     <script>
-        // Discord Webhook URL - حدد هذا عند إنشاء webhook في ديسكورد
-        const WEBHOOK_URL = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN';
-        
         document.getElementById('whitelistForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -153,47 +150,35 @@
             
             try {
                 const user = JSON.parse(localStorage.getItem('discord_user')) || {};
-                const avatarUrl = user.avatar 
-                    ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
-                    : 'https://cdn.discordapp.com/embed/avatars/0.png';
                 
-                // إنشاء الـ payload للـ webhook
-                const payload = {
-                    content: '📝 **تقديم جديد على الوايت ليست!**',
-                    embeds: [{
-                        color: 0x27F5A3,
-                        title: 'طلب وايت ليست من الموقع',
-                        thumbnail: { url: avatarUrl },
-                        fields: [
-                            { name: '👤 اسم الديسكورد', value: discordName, inline: true },
-                            { name: '🆔 معرف المستخدم', value: user.id || 'غير مسجل', inline: true },
-                            { name: '📝 مفهوم الرول بلاي', value: rpConcept }
-                        ],
-                        timestamp: new Date().toISOString(),
-                        footer: { text: 'تم الإرسال من موقع 7NAX7NA' }
-                    }]
-                };
-                
-                const response = await fetch(WEBHOOK_URL, {
+                const response = await fetch('/api/whitelist/submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        discord_name: discordName,
+                        rp_concept: rpConcept,
+                        user_id: user.id || null,
+                        user_avatar: user.avatar 
+                            ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                            : null
+                    })
                 });
                 
-                if (response.ok) {
-                    messageDiv.textContent = '✅ تم إرسال طلبك بنجاح! سيتم مراجعته قريباً.';
+                const data = await response.json();
+                
+                if (data.success) {
+                    messageDiv.textContent = '✅ ' + data.message;
                     messageDiv.style.color = '#27F5A3';
                     document.getElementById('whitelistForm').reset();
                 } else {
-                    messageDiv.textContent = '❌ حدث خطأ أثناء الإرسال!';
+                    messageDiv.textContent = '❌ ' + (data.error || 'حدث خطأ!');
                     messageDiv.style.color = '#ff6b6b';
                 }
             } catch (error) {
-                messageDiv.textContent = '❌ حدث خطأ في الاتصال!';
+                messageDiv.textContent = '❌ حدث خطأ في الاتصال بالسيرفر!';
                 messageDiv.style.color = '#ff6b6b';
-                console.error(error);
             }
             
             submitBtn.disabled = false;
