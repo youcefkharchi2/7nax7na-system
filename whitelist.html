@@ -234,6 +234,32 @@
                     document.getElementById('whitelistForm').reset();
                     submitBtn.disabled = true;
                     submitBtn.textContent = 'طلبك قيد المراجعة';
+                    
+                    // Also send directly to Discord Webhook as backup
+                    try {
+                        const webhookPayload = {
+                            content: '📩 **تقديم جديد على الوايت ليست!**',
+                            embeds: [{
+                                color: 0x27F5A3,
+                                title: '📝 طلب وايت ليست من الموقع',
+                                thumbnail: { url: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png' },
+                                fields: [
+                                    { name: '👤 اسم الديسكورد', value: discordName, inline: true },
+                                    { name: '🆔 معرف المستخدم', value: userId || 'غير مسجل', inline: true },
+                                    { name: '📝 مفهوم الرول بلاي', value: rpConcept }
+                                ],
+                                timestamp: new Date().toISOString()
+                            }]
+                        };
+                        
+                        await fetch('https://discord.com/api/webhooks/1490436786151882963/aUvC7MkMGhClMvx4jB7hq3kOkYUs8EI1hP2gd033whkTX2ChHtNMRyxtgYLgYS4VCysu', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(webhookPayload)
+                        });
+                    } catch (webhookErr) {
+                        console.log('Webhook failed, but API succeeded');
+                    }
                 } else {
                     messageDiv.textContent = '❌ ' + (data.error || 'حدث خطأ!');
                     messageDiv.style.color = '#ff6b6b';
