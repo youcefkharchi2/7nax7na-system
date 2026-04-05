@@ -9,11 +9,27 @@ const db = new sqlite3.Database('./database.sqlite');
 
 // Create tables
 db.serialize(() => {
+    // Migration: Update old table structure
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN rp_name TEXT`);
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN rp_age TEXT`);
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN real_name TEXT`);
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN real_age TEXT`);
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN country TEXT`);
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN steam_link TEXT`);
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN story TEXT`);
+    
     db.run(`CREATE TABLE IF NOT EXISTS whitelist_applications (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id TEXT,
         username TEXT,
         rp_concept TEXT,
+        rp_name TEXT,
+        rp_age TEXT,
+        real_name TEXT,
+        real_age TEXT,
+        country TEXT,
+        steam_link TEXT,
+        story TEXT,
         status TEXT DEFAULT 'pending',
         reason TEXT,
         notified INTEGER DEFAULT 0,
