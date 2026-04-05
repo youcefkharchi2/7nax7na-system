@@ -123,12 +123,32 @@
         <div class="form-container" id="formContainer">
             <form id="whitelistForm">
                 <div class="form-group">
-                    <label>اسم الديسكورد:</label>
-                    <input type="text" id="discordName" placeholder="Example#0000" required>
+                    <label>RP Name:</label>
+                    <input type="text" id="rpName" placeholder="اسم شخصيتك في الرول بلاي" required>
                 </div>
                 <div class="form-group">
-                    <label>ما هو مفهومك للرول بلاي؟</label>
-                    <textarea id="rpConcept" placeholder="اشرح بأسلوبك..." required></textarea>
+                    <label>RP Age:</label>
+                    <input type="number" id="rpAge" placeholder="عمر شخصيتك" required>
+                </div>
+                <div class="form-group">
+                    <label>Real Name:</label>
+                    <input type="text" id="realName" placeholder="اسمك الحقيقي" required>
+                </div>
+                <div class="form-group">
+                    <label>Real Age:</label>
+                    <input type="number" id="realAge" placeholder="عمرك الحقيقي" required>
+                </div>
+                <div class="form-group">
+                    <label>COUNTRY:</label>
+                    <input type="text" id="country" placeholder="بلدك" required>
+                </div>
+                <div class="form-group">
+                    <label>Steam Link:</label>
+                    <input type="url" id="steamLink" placeholder="رابط حساب Steam" required>
+                </div>
+                <div class="form-group">
+                    <label>Your Story:</label>
+                    <textarea id="story" placeholder="قصة شخصيتك..." required></textarea>
                 </div>
                 <button type="submit" class="submit-btn" id="submitBtn">إرسال الطلب</button>
                 <div id="message" style="margin-top: 15px; text-align: center; font-weight: bold;"></div>
@@ -202,8 +222,13 @@
             e.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
             const messageDiv = document.getElementById('message');
-            const discordName = document.getElementById('discordName').value;
-            const rpConcept = document.getElementById('rpConcept').value;
+            const rpName = document.getElementById('rpName').value;
+            const rpAge = document.getElementById('rpAge').value;
+            const realName = document.getElementById('realName').value;
+            const realAge = document.getElementById('realAge').value;
+            const country = document.getElementById('country').value;
+            const steamLink = document.getElementById('steamLink').value;
+            const story = document.getElementById('story').value;
             
             if (!userId) {
                 messageDiv.textContent = '❌ يرجى تسجيل الدخول أولاً!';
@@ -219,8 +244,13 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        discord_name: discordName,
-                        rp_concept: rpConcept,
+                        rp_name: rpName,
+                        rp_age: rpAge,
+                        real_name: realName,
+                        real_age: realAge,
+                        country: country,
+                        steam_link: steamLink,
+                        story: story,
                         user_id: userId,
                         user_avatar: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : null
                     })
@@ -241,8 +271,13 @@
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                discord_name: discordName,
-                                rp_concept: rpConcept,
+                                rp_name: rpName,
+                                rp_age: rpAge,
+                                real_name: realName,
+                                real_age: realAge,
+                                country: country,
+                                steam_link: steamLink,
+                                story: story,
                                 user_id: userId,
                                 user_avatar: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : null,
                                 app_id: data.id
@@ -261,9 +296,13 @@
                                     title: '📝 طلب وايت ليست من الموقع',
                                     thumbnail: { url: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png' },
                                     fields: [
-                                        { name: '👤 اسم الديسكورد', value: discordName, inline: true },
-                                        { name: '🆔 معرف المستخدم', value: userId || 'غير مسجل', inline: true },
-                                        { name: '📝 مفهوم الرول بلاي', value: rpConcept }
+                                        { name: '👤 RP Name', value: rpName, inline: true },
+                                        { name: '� RP Age', value: rpAge, inline: true },
+                                        { name: '📝 Real Name', value: realName, inline: true },
+                                        { name: '🎂 Real Age', value: realAge, inline: true },
+                                        { name: '🌍 Country', value: country, inline: true },
+                                        { name: '🔗 Steam', value: steamLink, inline: true },
+                                        { name: '📖 Story', value: story }
                                     ],
                                     timestamp: new Date().toISOString()
                                 }]
