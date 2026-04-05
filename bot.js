@@ -349,75 +349,29 @@ app.post('/api/whitelist/submit', async (req, res) => {
             
             const appId = this.lastID;
             
-            // Try to send via Bot first (with buttons)
-            const adminChannel = client.channels.cache.get(process.env.ADMIN_CHANNEL_ID);
-            if (adminChannel && client.user) {
-                try {
-                    // Create embed for Discord
-                    const embed = new EmbedBuilder()
-                        .setColor('#27F5A3')
-                        .setTitle('📝 طلب وايت ليست جديد من الموقع')
-                        .setDescription(`**اسم الديسكورد:** ${discord_name}\n\n**مفهوم الرول بلاي:**\n${rp_concept}`)
-                        .setThumbnail(user_avatar || 'https://cdn.discordapp.com/embed/avatars/0.png')
-                        .setTimestamp()
-                        .setFooter({ text: `ID: ${appId} | User: ${user_id || 'website'}` });
-                    
-                    // Create buttons row
-                    const row = new ActionRowBuilder()
-                        .addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(`approve_${appId}_${user_id || 'website'}`)
-                                .setLabel('✅ قبول')
-                                .setStyle(ButtonStyle.Success),
-                            new ButtonBuilder()
-                                .setCustomId(`reject_${appId}_${user_id || 'website'}`)
-                                .setLabel('❌ رفض')
-                                .setStyle(ButtonStyle.Danger),
-                            new ButtonBuilder()
-                                .setCustomId(`block_${appId}_${user_id || 'website'}`)
-                                .setLabel('🚫 حظر')
-                                .setStyle(ButtonStyle.Secondary)
-                        );
-                    
-                    await adminChannel.send({ 
-                        embeds: [embed],
-                        content: '📩 تقديم جديد على الوايت ليست!',
-                        components: [row]
-                    });
-                    console.log('Message with buttons sent via Bot');
-                } catch (sendErr) {
-                    console.error('Failed to send via Bot:', sendErr);
+            // Send to external bot (KataBump) for Discord message with buttons
+            try {
+                const botUrl = process.env.BOT_SERVER_URL || 'http://your-katabump-url:3000';
+                const response = await fetch(`${botUrl}/send-whitelist`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        discord_name,
+                        rp_concept,
+                        user_id,
+                        user_avatar,
+                        app_id: appId
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Request sent to bot for Discord message with buttons');
+                } else {
+                    console.log('⚠️ Bot server returned error, but data saved to DB');
                 }
-            } else if (process.env.WEBHOOK_URL) {
-                // Fallback to Webhook (without buttons)
-                try {
-                    const webhookPayload = {
-                        content: '📩 **تقديم جديد على الوايت ليست!**',
-                        embeds: [{
-                            color: 0x27F5A3,
-                            title: '📝 طلب وايت ليست جديد من الموقع',
-                            thumbnail: { url: user_avatar || 'https://cdn.discordapp.com/embed/avatars/0.png' },
-                            fields: [
-                                { name: '👤 اسم الديسكورد', value: discord_name, inline: true },
-                                { name: '🆔 معرف المستخدم', value: user_id || 'غير مسجل', inline: true },
-                                { name: '📝 مفهوم الرول بلاي', value: rp_concept }
-                            ],
-                            footer: { text: `ID: ${appId} | User: ${user_id || 'website'}` },
-                            timestamp: new Date().toISOString()
-                        }]
-                    };
-                    
-                    await fetch(process.env.WEBHOOK_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(webhookPayload)
-                    });
-                    console.log('Message sent via Webhook (no buttons)');
-                } catch (webhookErr) {
-                    console.error('Failed to send via Webhook:', webhookErr);
-                }
-            } else {
-                console.log('No Discord connection available - data saved to DB only');
+            } catch (botErr) {
+                console.error('⚠️ Failed to contact bot server:', botErr.message);
+                console.log('Data saved to DB, Discord message skipped');
             }
             
             res.json({ 
