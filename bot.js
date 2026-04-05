@@ -321,6 +321,47 @@ app.post('/api/whitelist/:id/reject', (req, res) => {
     });
 });
 
+// Submit whitelist application from website
+app.post('/api/whitelist/submit', (req, res) => {
+    const { discord_name, rp_concept, user_id, user_avatar } = req.body;
+    
+    // Save to database
+    db.run(
+        'INSERT INTO whitelist_applications (user_id, username, rp_concept) VALUES (?, ?, ?)',
+        [user_id || 'website', discord_name, rp_concept],
+        function(err) {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Database error' });
+            }
+            
+            // Create embed for Discord
+            const embed = new EmbedBuilder()
+                .setColor('#27F5A3')
+                .setTitle('📝 طلب وايت ليست جديد من الموقع')
+                .setDescription(`**اسم الديسكورد:** ${discord_name}\n\n**مفهوم الرول بلاي:**\n${rp_concept}`)
+                .setThumbnail(user_avatar || 'https://cdn.discordapp.com/embed/avatars/0.png')
+                .setTimestamp()
+                .setFooter({ text: `ID: ${this.lastID}` });
+            
+            // Send to admin channel
+            const adminChannel = client.channels.cache.get(process.env.ADMIN_CHANNEL_ID);
+            if (adminChannel) {
+                adminChannel.send({ 
+                    embeds: [embed],
+                    content: '📩 تقديم جديد على الوايت ليست!'
+                });
+            }
+            
+            res.json({ 
+                success: true, 
+                message: 'تم إرسال طلبك بنجاح!',
+                id: this.lastID 
+            });
+        }
+    );
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}`);
