@@ -378,7 +378,21 @@ app.listen(PORT, () => {
 });
 
 // Login bot
-client.login(process.env.DISCORD_TOKEN);
+console.log('Attempting to login with token:', process.env.DISCORD_TOKEN ? 'Token exists (hidden)' : 'NO TOKEN!');
+
+client.login(process.env.DISCORD_TOKEN)
+    .then(() => {
+        console.log('Bot logged in successfully!');
+    })
+    .catch(err => {
+        console.error('Bot failed to login:', err.message);
+    });
+
+// Bot ready event
+client.once('ready', () => {
+    console.log(`Bot is online as ${client.user.tag}`);
+    console.log('Bot is in', client.guilds.cache.size, 'servers');
+});
 
 // Handle errors
 process.on('unhandledRejection', error => {
