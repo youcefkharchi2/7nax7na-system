@@ -336,12 +336,12 @@ app.post('/api/whitelist/:id/reject', (req, res) => {
 
 // Submit whitelist application from website
 app.post('/api/whitelist/submit', async (req, res) => {
-    const { discord_name, rp_concept, user_id, user_avatar } = req.body;
+    const { rp_name, rp_age, real_name, real_age, country, steam_link, story, user_id, user_avatar } = req.body;
     
     // Save to database
     db.run(
-        'INSERT INTO whitelist_applications (user_id, username, rp_concept, status) VALUES (?, ?, ?, ?)',
-        [user_id || 'website', discord_name, rp_concept, 'pending'],
+        'INSERT INTO whitelist_applications (user_id, username, rp_name, rp_age, real_name, real_age, country, steam_link, story, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [user_id || 'website', rp_name, rp_name, rp_age, real_name, real_age, country, steam_link, story, 'pending'],
         async function(err) {
             if (err) {
                 console.error(err);
@@ -357,8 +357,13 @@ app.post('/api/whitelist/submit', async (req, res) => {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        discord_name,
-                        rp_concept,
+                        rp_name,
+                        rp_age,
+                        real_name,
+                        real_age,
+                        country,
+                        steam_link,
+                        story,
                         user_id,
                         user_avatar,
                         app_id: appId
