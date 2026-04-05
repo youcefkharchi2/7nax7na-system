@@ -16,6 +16,7 @@ db.serialize(() => {
         rp_concept TEXT,
         status TEXT DEFAULT 'pending',
         reason TEXT,
+        notified INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
     
@@ -407,6 +408,27 @@ app.get('/api/whitelist/status/:user_id', (req, res) => {
         }
     );
 });
+
+// Get pending whitelist requests (for bot polling)
+app.get('/api/whitelist/pending', (req, res) => {
+    db.all(
+        'SELECT * FROM whitelist_applications WHERE status = "pending" AND (notified IS NULL OR notified = 0)',
+        [],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json(rows);
+        }
+    );
+});
+
+// Mark request as notified
+app.post('/api/whitelist/:id/notified', (req, res) => {
+    db.run('UPDATE whitelist_applications SET notified = 1 WHERE id = ?', [req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Marked as notified' });
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}`);
 });

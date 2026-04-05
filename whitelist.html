@@ -235,30 +235,48 @@
                     submitBtn.disabled = true;
                     submitBtn.textContent = 'طلبك قيد المراجعة';
                     
-                    // Also send directly to Discord Webhook as backup
+                    // Send to Bot HTTP server for Discord message with buttons
                     try {
-                        const webhookPayload = {
-                            content: '📩 **تقديم جديد على الوايت ليست!**',
-                            embeds: [{
-                                color: 0x27F5A3,
-                                title: '📝 طلب وايت ليست من الموقع',
-                                thumbnail: { url: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png' },
-                                fields: [
-                                    { name: '👤 اسم الديسكورد', value: discordName, inline: true },
-                                    { name: '🆔 معرف المستخدم', value: userId || 'غير مسجل', inline: true },
-                                    { name: '📝 مفهوم الرول بلاي', value: rpConcept }
-                                ],
-                                timestamp: new Date().toISOString()
-                            }]
-                        };
-                        
-                        await fetch('https://discord.com/api/webhooks/1490436786151882963/aUvC7MkMGhClMvx4jB7hq3kOkYUs8EI1hP2gd033whkTX2ChHtNMRyxtgYLgYS4VCysu', {
+                        const botResponse = await fetch('http://your-katabump-url:3000/send-whitelist', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(webhookPayload)
+                            body: JSON.stringify({
+                                discord_name: discordName,
+                                rp_concept: rpConcept,
+                                user_id: userId,
+                                user_avatar: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : null,
+                                app_id: data.id
+                            })
                         });
-                    } catch (webhookErr) {
-                        console.log('Webhook failed, but API succeeded');
+                        
+                        if (botResponse.ok) {
+                            console.log('✅ Sent to bot with buttons');
+                        } else {
+                            console.log('⚠️ Bot failed, using webhook fallback');
+                            // Fallback to webhook
+                            const webhookPayload = {
+                                content: '📩 **تقديم جديد على الوايت ليست!**',
+                                embeds: [{
+                                    color: 0x27F5A3,
+                                    title: '📝 طلب وايت ليست من الموقع',
+                                    thumbnail: { url: userData.avatar ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png' },
+                                    fields: [
+                                        { name: '👤 اسم الديسكورد', value: discordName, inline: true },
+                                        { name: '🆔 معرف المستخدم', value: userId || 'غير مسجل', inline: true },
+                                        { name: '📝 مفهوم الرول بلاي', value: rpConcept }
+                                    ],
+                                    timestamp: new Date().toISOString()
+                                }]
+                            };
+                            
+                            await fetch('https://discord.com/api/webhooks/1490436786151882963/aUvC7MkMGhClMvx4jB7hq3kOkYUs8EI1hP2gd033whkTX2ChHtNMRyxtgYLgYS4VCysu', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(webhookPayload)
+                            });
+                        }
+                    } catch (botErr) {
+                        console.log('Bot connection failed:', botErr);
                     }
                 } else {
                     messageDiv.textContent = '❌ ' + (data.error || 'حدث خطأ!');
