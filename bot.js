@@ -9,15 +9,7 @@ const db = new sqlite3.Database('./database.sqlite');
 
 // Create tables
 db.serialize(() => {
-    // Migration: Update old table structure
-    db.run(`ALTER TABLE whitelist_applications ADD COLUMN rp_name TEXT`);
-    db.run(`ALTER TABLE whitelist_applications ADD COLUMN rp_age TEXT`);
-    db.run(`ALTER TABLE whitelist_applications ADD COLUMN real_name TEXT`);
-    db.run(`ALTER TABLE whitelist_applications ADD COLUMN real_age TEXT`);
-    db.run(`ALTER TABLE whitelist_applications ADD COLUMN country TEXT`);
-    db.run(`ALTER TABLE whitelist_applications ADD COLUMN steam_link TEXT`);
-    db.run(`ALTER TABLE whitelist_applications ADD COLUMN story TEXT`);
-    
+    // Create table with all columns (for new deployments)
     db.run(`CREATE TABLE IF NOT EXISTS whitelist_applications (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id TEXT,
@@ -35,6 +27,15 @@ db.serialize(() => {
         notified INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
+    
+    // Migration: Add columns for old deployments (ignore errors if columns already exist)
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN rp_name TEXT`, (err) => { if(err && !err.message.includes('duplicate column')) console.log('Migration: rp_name already exists or error') });
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN rp_age TEXT`, (err) => { if(err && !err.message.includes('duplicate column')) console.log('Migration: rp_age already exists or error') });
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN real_name TEXT`, (err) => { if(err && !err.message.includes('duplicate column')) console.log('Migration: real_name already exists or error') });
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN real_age TEXT`, (err) => { if(err && !err.message.includes('duplicate column')) console.log('Migration: real_age already exists or error') });
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN country TEXT`, (err) => { if(err && !err.message.includes('duplicate column')) console.log('Migration: country already exists or error') });
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN steam_link TEXT`, (err) => { if(err && !err.message.includes('duplicate column')) console.log('Migration: steam_link already exists or error') });
+    db.run(`ALTER TABLE whitelist_applications ADD COLUMN story TEXT`, (err) => { if(err && !err.message.includes('duplicate column')) console.log('Migration: story already exists or error') });
     
     db.run(`CREATE TABLE IF NOT EXISTS purchases (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
