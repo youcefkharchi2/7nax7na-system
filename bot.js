@@ -377,32 +377,43 @@ app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}`);
 });
 
-// Login bot
-console.log('Starting bot login process...');
-console.log('Token length:', process.env.DISCORD_TOKEN ? process.env.DISCORD_TOKEN.length : 0);
-
-client.login(process.env.DISCORD_TOKEN)
-    .then(() => {
+// Login bot with timeout
+async function startBot() {
+    console.log('Starting bot login process...');
+    console.log('Token length:', process.env.DISCORD_TOKEN ? process.env.DISCORD_TOKEN.length : 0);
+    
+    try {
+        const loginPromise = client.login(process.env.DISCORD_TOKEN);
+        
+        // Timeout after 10 seconds
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Login timeout - took more than 10 seconds')), 10000);
+        });
+        
+        await Promise.race([loginPromise, timeoutPromise]);
+        
         console.log('✅ Bot logged in successfully!');
-    })
-    .catch(err => {
+        console.log(`🤖 Bot is ONLINE as ${client.user.tag}`);
+        console.log('📊 Bot is in', client.guilds.cache.size, 'servers');
+    } catch (err) {
         console.error('❌ Bot failed to login:', err.message);
         console.error('Error code:', err.code);
-    });
+        console.error('Full error:', err);
+    }
+}
 
-// Bot ready event
+startBot();
+
+// Bot ready event (backup)
 client.once('ready', () => {
     console.log(`🤖 Bot is ONLINE as ${client.user.tag}`);
     console.log('📊 Bot is in', client.guilds.cache.size, 'servers');
 });
 
-// Debug: Log all events
 client.on('debug', info => {
-    console.log('Debug:', info);
-});
-
-client.on('warn', info => {
-    console.log('Warn:', info);
+    if (info.includes('login') || info.includes('token')) {
+        console.log('Debug:', info);
+    }
 });
 
 client.on('error', error => {
