@@ -60,13 +60,13 @@
 
             if (error) {
                 document.getElementById('error').textContent = 'فشل تسجيل الدخول: ' + error;
-                setTimeout(() => window.location.href = 'login.html', 3000);
+                setTimeout(() => window.location.href = '/login', 3000);
                 return;
             }
 
             if (!accessToken) {
                 document.getElementById('error').textContent = 'لم يتم العثور على token';
-                setTimeout(() => window.location.href = 'login.html', 3000);
+                setTimeout(() => window.location.href = '/login', 3000);
                 return;
             }
 
@@ -95,7 +95,7 @@
 
             } catch (err) {
                 document.getElementById('error').textContent = 'حدث خطأ: ' + err.message;
-                setTimeout(() => window.location.href = 'login.html', 3000);
+                setTimeout(() => window.location.href = '/login', 3000);
             }
         }
 
