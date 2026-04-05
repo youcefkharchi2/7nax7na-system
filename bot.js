@@ -378,20 +378,35 @@ app.listen(PORT, () => {
 });
 
 // Login bot
-console.log('Attempting to login with token:', process.env.DISCORD_TOKEN ? 'Token exists (hidden)' : 'NO TOKEN!');
+console.log('Starting bot login process...');
+console.log('Token length:', process.env.DISCORD_TOKEN ? process.env.DISCORD_TOKEN.length : 0);
 
 client.login(process.env.DISCORD_TOKEN)
     .then(() => {
-        console.log('Bot logged in successfully!');
+        console.log('✅ Bot logged in successfully!');
     })
     .catch(err => {
-        console.error('Bot failed to login:', err.message);
+        console.error('❌ Bot failed to login:', err.message);
+        console.error('Error code:', err.code);
     });
 
 // Bot ready event
 client.once('ready', () => {
-    console.log(`Bot is online as ${client.user.tag}`);
-    console.log('Bot is in', client.guilds.cache.size, 'servers');
+    console.log(`🤖 Bot is ONLINE as ${client.user.tag}`);
+    console.log('📊 Bot is in', client.guilds.cache.size, 'servers');
+});
+
+// Debug: Log all events
+client.on('debug', info => {
+    console.log('Debug:', info);
+});
+
+client.on('warn', info => {
+    console.log('Warn:', info);
+});
+
+client.on('error', error => {
+    console.error('Client Error:', error);
 });
 
 // Handle errors
