@@ -114,7 +114,7 @@
             transform: scale(1.1);
             box-shadow: 0 6px 20px rgba(39, 245, 163, 0.6);
         }
-        /* Floating nav buttons */
+        /* Floating nav buttons - no border/frame, just text with underline */
         .float-nav {
             position: fixed;
             bottom: 20px;
@@ -123,10 +123,6 @@
             display: flex;
             gap: 30px;
             z-index: 1000;
-            background: rgba(0,0,0,0.7);
-            padding: 10px 25px;
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
         }
         .float-nav a {
             color: #fff;
@@ -143,7 +139,7 @@
             bottom: 0;
             left: 0;
             width: 0;
-            height: 1px;
+            height: 2px;
             background: #27F5A3;
             transition: width 0.3s;
         }
