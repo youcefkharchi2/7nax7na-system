@@ -67,9 +67,30 @@
             font-size: 14px;
             font-weight: bold;
         }
+        /* Login/Logout buttons in nav */
+        .login-btn {
+            color: #27F5A3 !important;
+            border: 1px solid #27F5A3;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        .login-btn:hover {
+            background: #27F5A3;
+            color: #000 !important;
+        }
         .logout-btn {
             color: #ff6b6b !important;
-            font-size: 14px;
+            border: 1px solid #ff6b6b;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        .logout-btn:hover {
+            background: #ff6b6b;
+            color: #fff !important;
         }
 
         /* Hero with Video Background */
@@ -145,41 +166,43 @@
 <body>
 
     <script>
-        // Check if user is logged in
-        if (!localStorage.getItem('discord_user')) {
-            window.location.href = '/login';
-        }
+        // Check if user is logged in - if not, show login button
+        const isLoggedIn = localStorage.getItem('discord_user');
     </script>
 
     <nav class="navbar">
         <div class="nav-left">
             <div class="logo">7NAX<span>7NA</span></div>
-            <div class="user-profile">
+            <div class="user-profile" id="user-section" style="display: none;">
                 <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
                 <span id="user-info" class="user-name"></span>
             </div>
-            <a href="#" onclick="logout()" class="logout-btn">تسجيل الخروج</a>
         </div>
         <ul class="nav-links">
             <li><a href="/interface">الرئيسية</a></li>
             <li><a href="/store">المتجر</a></li>
             <li><a href="/whitelist">وايت ليست</a></li>
+            <li id="login-btn"><a href="/login" class="login-btn">تسجيل الدخول</a></li>
+            <li id="logout-btn" style="display: none;"><a href="#" onclick="logout()" class="logout-btn">تسجيل الخروج</a></li>
         </ul>
     </nav>
 
     <script>
-        // Show user info
-        const user = JSON.parse(localStorage.getItem('discord_user'));
-        if (user) {
-            document.getElementById('user-info').textContent = user.username;
-            // Set avatar
-            const avatarUrl = user.avatar 
-                ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
-                : 'https://cdn.discordapp.com/embed/avatars/0.png';
-            document.getElementById('user-avatar').src = avatarUrl;
+        // Show/hide login or logout based on auth state
+        if (isLoggedIn) {
+            document.getElementById('login-btn').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'block';
+            document.getElementById('user-section').style.display = 'flex';
+            const user = JSON.parse(localStorage.getItem('discord_user'));
+            if (user) {
+                document.getElementById('user-info').textContent = user.username;
+                const avatarUrl = user.avatar 
+                    ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+                document.getElementById('user-avatar').src = avatarUrl;
+            }
         }
         
-        // Logout function
         function logout() {
             localStorage.removeItem('discord_user');
             window.location.href = '/login';
