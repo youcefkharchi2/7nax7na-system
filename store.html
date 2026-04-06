@@ -62,7 +62,15 @@
         }
         .logout-btn {
             color: #ff6b6b !important;
-            font-size: 14px;
+            border: 1px solid #ff6b6b;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        .logout-btn:hover {
+            background: #ff6b6b;
+            color: #fff !important;
         }
 
         /* Store Section */
@@ -184,12 +192,12 @@
                 <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
                 <span id="user-info" class="user-name"></span>
             </div>
-            <a href="#" onclick="logout()" class="logout-btn">تسجيل الخروج</a>
         </div>
         <ul class="nav-links">
             <li><a href="/interface">الرئيسية</a></li>
             <li><a href="/store">المتجر</a></li>
             <li><a href="/whitelist">وايت ليست</a></li>
+            <li><a href="#" onclick="logout()" class="logout-btn">تسجيل الخروج</a></li>
         </ul>
     </nav>
 
