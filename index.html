@@ -166,7 +166,10 @@
 <body>
 
     <script>
-        // Check if user is logged in - if not, show login button
+        // Check if user is logged in - if not, redirect to login
+        if (!localStorage.getItem('discord_user')) {
+            window.location.href = '/login';
+        }
         const isLoggedIn = localStorage.getItem('discord_user');
     </script>
 
