@@ -21,35 +21,25 @@ export default async function handler(req, res) {
     // Generate unique application ID
     const appId = Date.now().toString(36) + Math.random().toString(36).substr(2);
     
-    // Send to Discord via webhook
-    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
-    if (webhookUrl) {
-      const embed = {
-        title: '📩 طلب وايت ليست جديد',
-        color: 0x27F5A3,
-        description: `**مقدم الطلب:** <@${user_id}>`,
-        fields: [
-          { name: '👤 RP Name', value: rp_name, inline: true },
-          { name: '🎂 RP Age', value: rp_age, inline: true },
-          { name: '📝 Real Name', value: real_name, inline: true },
-          { name: '🔢 Real Age', value: real_age, inline: true },
-          { name: '🌍 Country', value: country, inline: true },
-          { name: '🔗 Steam', value: steam_link, inline: false },
-          { name: '📖 Story', value: story.substring(0, 1000), inline: false }
-        ],
-        footer: { text: `ID: ${appId}` },
-        timestamp: new Date().toISOString()
-      };
-      
-      await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: `📩 تقديم جديد على الوايت ليست!\n<@${user_id}>`,
-          embeds: [embed]
-        })
-      });
-    }
+    // Send to Discord Bot API
+    const botApiUrl = process.env.BOT_API_URL || 'http://51.75.118.17:20205/send-whitelist';
+    
+    await fetch(botApiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        appId,
+        rp_name,
+        rp_age,
+        real_name,
+        real_age,
+        country,
+        steam_link,
+        story,
+        user_id,
+        user_avatar
+      })
+    });
     
     res.status(200).json({ 
       success: true, 
