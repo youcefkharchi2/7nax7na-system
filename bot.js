@@ -553,11 +553,6 @@ client.on('interactionCreate', async (interaction) => {
             embeds: [embed],
             components: [] // Remove buttons
         });
-        
-        interaction.followUp({ 
-            content: `${actionText} بنجاح!`, 
-            ephemeral: true 
-        });
     });
 });
 
@@ -585,11 +580,6 @@ client.on('interactionCreate', async (interaction) => {
             interaction.update({ 
                 embeds: [embed],
                 components: [] // Remove buttons
-            });
-            
-            interaction.followUp({ 
-                content: `🚫 تم الحظر بنجاح!\n**السبب:** ${reason}`, 
-                ephemeral: true 
             });
         });
     }

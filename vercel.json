@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "routes": [
+    { "src": "/store", "dest": "/store.html" },
+    { "src": "/whitelist", "dest": "/whitelist.html" },
+    { "src": "/login", "dest": "/login.html" },
+    { "src": "/interface", "dest": "/index.html" },
+    { "src": "/auth", "dest": "/auth.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}
